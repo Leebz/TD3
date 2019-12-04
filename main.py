@@ -36,7 +36,8 @@ if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--policy", default="TD3")                  # Policy name (TD3, DDPG or OurDDPG)
-	parser.add_argument("--env", default="HalfCheetah-v2")          # OpenAI gym environment name
+	# parser.add_argument("--env", default="HalfCheetah-v2")          # OpenAI gym environment name
+	parser.add_argument("--env", default="Pendulum-v0")          # OpenAI gym environment name
 	parser.add_argument("--seed", default=0, type=int)              # Sets Gym, PyTorch and Numpy seeds
 	parser.add_argument("--start_timesteps", default=1e4, type=int) # Time steps initial random policy is used
 	parser.add_argument("--eval_freq", default=5e3, type=int)       # How often (time steps) we evaluate
@@ -109,8 +110,8 @@ if __name__ == "__main__":
 	episode_num = 0
 
 	for t in range(int(args.max_timesteps)):
-		
 		episode_timesteps += 1
+		# env.render()
 
 		# Select action randomly or according to policy
 		if t < args.start_timesteps:
