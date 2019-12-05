@@ -5,12 +5,12 @@ import numpy as np
 
 torch.manual_seed(1)
 
-x = torch.unsqueeze(torch.linspace(0, np.pi*2, 100), dim=1) # [100, 1]
+x = torch.unsqueeze(torch.linspace(0, np.pi*2, 100), dim=1).cuda() # [100, 1]
 
 # y = x.pow(3) + 0.1*torch.rand(x.size())
-y = 4*torch.sin(x)*torch.cos(3*x) + 0.2 * torch.rand(x.size())
-plt.scatter(x.numpy(), y.numpy())
-plt.show()
+y = 4*torch.sin(x)*torch.cos(3*x) + 0.2 * torch.rand(x.size()).cuda()
+# plt.scatter(x.numpy(), y.numpy())
+# plt.show()
 
 """
 Method 1:
@@ -35,18 +35,21 @@ Method 1:
 Method 2：
 """
 net = torch.nn.Sequential(
-    torch.nn.Linear(1, 10),
+
+    torch.nn.Linear(1, 300),
     torch.nn.ReLU(),
-    torch.nn.Linear(10, 10),
+    torch.nn.Linear(300, 300),
     torch.nn.ReLU(),
-    torch.nn.Linear(10, 1)
-)
+    torch.nn.Linear(300, 300),
+    torch.nn.ReLU(),
+    torch.nn.Linear(300, 1)
+).cuda()
 print(net)
-optimizer = torch.optim.Adam(net.parameters(), lr=0.01)
+optimizer = torch.optim.Adam(net.parameters(), lr=0.0005)
 loss_func = torch.nn.MSELoss()
 
 plt.ion()
-for i in range(10001):
+for i in range(50001):
     prediction = net(x)
 
     loss = loss_func(prediction, y)
@@ -58,9 +61,9 @@ for i in range(10001):
 
     if i % 5==0:
         plt.cla()
-        plt.scatter(x.numpy(), y.numpy())
-        plt.plot(x.numpy(), prediction.data.numpy(), 'r-', lw=5)
-        print(i, loss.data.numpy())
+        plt.scatter(x.cpu().numpy(), y.cpu().numpy())
+        plt.plot(x.cpu().numpy(), prediction.data.cpu().numpy(), 'r-', lw=5)
+        print(i, loss.data.cpu().numpy())
         # plt.text(0.5, 0, "Loss=%0.4f" % loss.numpy(), fontdict={'size':20, 'color':'red'})
         plt.pause(0.1)
 
